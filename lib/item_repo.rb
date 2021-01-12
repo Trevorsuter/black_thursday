@@ -1,17 +1,21 @@
-require 'CSV'
+# require 'CSV'
 require_relative './cleaner'
 require_relative './item'
+require_relative './openable'
 
 class ItemRepository
+  include Openable
+
   attr_reader :items
 
   def initialize(file = './data/items.csv', engine)
     @engine = engine
     @file = file
     @cleaner = Cleaner.new
-    @items_csv = CSV.open(@file, headers: true, header_converters: :symbol)
+    # @items_csv = CSV.open(@file, headers: true, header_converters: :symbol)
     @items = []
-    item_objects(@items_csv)
+    @item_objects(read_from(@file))
+    # item_objects(@items_csv)
   end
 
   def inspect
