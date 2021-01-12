@@ -14,7 +14,8 @@ class ItemRepository
     @cleaner = Cleaner.new
     # @items_csv = CSV.open(@file, headers: true, header_converters: :symbol)
     @items = []
-    @item_objects(read_from(@file))
+    @csv_data = read_from(@file)
+    @item_objects(@csv_data)
     # item_objects(@items_csv)
   end
 
