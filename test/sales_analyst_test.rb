@@ -139,7 +139,6 @@ class TestSalesAnalyst < MiniTest::Test
   end
 
   def test_best_item_for_merchant
-    require 'pry'; binding.pry
     expected = @sales_engine.items.find_by_id(263556848)
     assert_equal expected, @sales_analyst.best_item_for_merchant(12334105)
     assert_equal Item, @sales_analyst.most_items_sold_for_merchant(12334105)[0].class
