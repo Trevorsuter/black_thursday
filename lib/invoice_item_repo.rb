@@ -1,5 +1,4 @@
 require_relative './invoice_item'
-require_relative './cleaner'
 require_relative './openable'
 require 'Time'
 
@@ -10,7 +9,6 @@ class InvoiceItemRepository
   def initialize(file = './data/invoice_items.csv')
     @file = file
     @invoice_items = Hash.new
-    @cleaner = Cleaner.new
     ii_objects(read_from(@file))
   end
 
