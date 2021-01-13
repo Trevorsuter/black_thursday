@@ -1,7 +1,10 @@
-require 'CSV'
 require 'Time'
 require_relative './transaction'
+require_relative './openable'
+
 class TransactionRepository
+  include Openable
+  
   attr_reader :engine, :file
   attr_accessor :transactions
 
@@ -9,7 +12,7 @@ class TransactionRepository
     @engine = engine
     @file = file
     @transactions = {}
-    make_transactions(CSV.readlines(@file, headers: true, header_converters: :symbol))
+    make_transactions(read_from(@file))
   end
 
   def inspect
