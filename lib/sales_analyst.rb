@@ -195,6 +195,7 @@ class SalesAnalyst
     all_prices.sum
   end
 
+revenue-by-merchant
   def revenue_by_merchant(merchant_id)
     @sales_engine.revenue_by_merchant(merchant_id)
   end
@@ -211,5 +212,9 @@ class SalesAnalyst
     all_merchant_revenue.sort_by do |merchant, revenue|
       revenue
     end.reverse.to_h.keys[0, x]
+  end
+
+  def total_revenue_by_date(day)
+    @sales_engine.total_revenue_by_date(day)
   end
 end

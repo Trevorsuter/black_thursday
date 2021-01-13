@@ -96,14 +96,11 @@ class SalesEngine
     end.uniq
   end
 
-  def total_revenue_by_date(date)
-    revenue = 0
-    confirmed_invoices = @invoices.all.find_all do |invoice|
-      invoice.created_at == date
-    end
-    confirmed_invoices.each do |invoice|
-      if invoice_paid_in_full?(invoice.id)
-        revenue += invoice_total(invoice.id)
+  def total_revenue_by_date(day)
+    revenue = BigDecimal.new(0)
+    successful_invoice_transactions(day).each do |invoice|
+      @invoice_items.find_all_by_invoice_id(invoice.id).each do |ii|
+        revenue += (ii.unit_price * ii.quantity)
       end
     end
     revenue
@@ -140,5 +137,19 @@ class SalesEngine
       (item.unit_price * item.quantity)
     end
     all_prices.sum
+  end
+  
+  def successful_invoice_transactions(day)
+    invoices_by_date(day).select do |invoice|
+      @transactions.successful_transactions_invoice_ids.any? do |trans_inv_id|
+        trans_inv_id == invoice.id
+      end
+    end
+  end
+
+  def invoices_by_date(day)
+    @invoices.all.select do |invoice|
+      invoice.created_at == day
+    end
   end
 end
