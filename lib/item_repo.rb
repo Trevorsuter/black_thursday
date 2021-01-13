@@ -1,7 +1,7 @@
-# require 'CSV'
 require_relative './cleaner'
 require_relative './item'
 require_relative './openable'
+require 'Time'
 
 class ItemRepository
   include Openable
@@ -12,11 +12,8 @@ class ItemRepository
     @engine = engine
     @file = file
     @cleaner = Cleaner.new
-    # @items_csv = CSV.open(@file, headers: true, header_converters: :symbol)
     @items = []
-    @csv_data = read_from(@file)
-    @item_objects(@csv_data)
-    # item_objects(@items_csv)
+    item_objects(read_from(@file))
   end
 
   def inspect
@@ -31,8 +28,8 @@ class ItemRepository
                 :name        => item[:name],
                 :description => item[:description],
                 :unit_price  => BigDecimal.new(value_adjusted, precision),
-                :created_at  => @cleaner.clean_date(item[:created_at]),
-                :updated_at  => @cleaner.clean_date(item[:updated_at]),
+                :created_at  => Time.parse(item[:created_at]),
+                :updated_at  => Time.parse(item[:updated_at]),
                 :merchant_id => item[:merchant_id].to_i})
     end
     @items
