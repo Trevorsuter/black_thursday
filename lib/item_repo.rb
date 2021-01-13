@@ -1,4 +1,3 @@
-require_relative './cleaner'
 require_relative './item'
 require_relative './openable'
 require 'Time'
@@ -11,7 +10,6 @@ class ItemRepository
   def initialize(file = './data/items.csv', engine)
     @engine = engine
     @file = file
-    @cleaner = Cleaner.new
     @items = []
     item_objects(read_from(@file))
   end
