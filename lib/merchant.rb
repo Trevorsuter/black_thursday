@@ -16,14 +16,10 @@ class Merchant
   end
 
   def update(attributes)
-    if !attributes.keys.include?(:id)
+    unless attributes.keys.include?(:id)
       @name        = attributes[:name] if attributes[:name]
       @repo        = attributes[:repo] if attributes[:repo]
       @updated_at  = Time.now
     end 
   end
-
-  # def find_items
-
-  # end
 end
