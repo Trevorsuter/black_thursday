@@ -82,9 +82,74 @@ class SalesEngine
     invoice_count
   end
 
+  def pending_invoices
+    @invoices.all.select do |invoice|
+      @transactions.find_all_by_invoice_id(invoice.id).none? do |transaction|
+        transaction.result == :success
+      end
+    end
+  end
+
   def merchants_with_pending_invoices
-    @invoices.status_by_merchant_id(:pending).map do |merchant_id|
-      @merchants.find_by_id(merchant_id)
+    pending_invoices.map do |pending_invoice|
+      @merchants.find_by_id(pending_invoice.merchant_id)
     end.uniq
+  end
+
+  def total_revenue_by_date(day)
+    revenue = BigDecimal.new(0)
+    successful_invoice_transactions(day).each do |invoice|
+      @invoice_items.find_all_by_invoice_id(invoice.id).each do |ii|
+        revenue += (ii.unit_price * ii.quantity)
+      end
+    end
+    revenue
+  end
+
+  def revenue_by_merchant(merchant_id)
+    revenue = 0
+    merchant_match = @invoices.all.find_all do |invoice|
+      invoice.merchant_id == merchant_id
+    end
+    merchant_match.each do |invoice|
+      if invoice_paid_in_full?(invoice.id)
+        revenue += invoice_total(invoice.id)
+      end
+    end
+    revenue
+  end
+
+  def invoice_paid_in_full?(invoice_id)
+    transacts = @transactions.find_all_by_invoice_id(invoice_id)
+    success = transacts.map do |transact|
+      true if transact.result == :success
+     end
+    if success.include?(true) == true
+      true
+    else
+      false
+    end
+  end
+
+  def invoice_total(invoice_id)
+    all_items = @invoice_items.find_all_by_invoice_id(invoice_id)
+    all_prices = all_items.map do |item|
+      (item.unit_price * item.quantity)
+    end
+    all_prices.sum
+  end
+  
+  def successful_invoice_transactions(day)
+    invoices_by_date(day).select do |invoice|
+      @transactions.successful_transactions_invoice_ids.any? do |trans_inv_id|
+        trans_inv_id == invoice.id
+      end
+    end
+  end
+
+  def invoices_by_date(day)
+    @invoices.all.select do |invoice|
+      invoice.created_at == day
+    end
   end
 end

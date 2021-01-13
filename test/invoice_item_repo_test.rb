@@ -94,4 +94,17 @@ class InvoiceItemRepo < Minitest::Test
     @ii_repo.delete(2352)
     assert_equal nil, @ii_repo.find_by_id(2352)
   end
+
+  def test_invoice_item_by_invoice_id
+    assert_equal Hash, @ii_repo.invoice_item_by_invoice_id.class
+    assert_equal 519, @ii_repo.invoice_item_by_invoice_id.keys.first
+    assert_equal Array, @ii_repo.invoice_item_by_invoice_id.values.first.class
+    assert_equal 4, @ii_repo.invoice_item_by_invoice_id.values.first.count
+  end
+
+  def test_invoice_item_revenue_by_invoice_id
+    assert_equal Hash, @ii_repo.invoice_item_revenue_by_invoice_id.class
+    assert_equal 519, @ii_repo.invoice_item_revenue_by_invoice_id.keys.first
+    assert_equal BigDecimal, @ii_repo.invoice_item_revenue_by_invoice_id.values.first.class
+  end
 end

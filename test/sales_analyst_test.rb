@@ -16,8 +16,6 @@ class TestSalesAnalyst < MiniTest::Test
 
   def test_it_exists
     assert_instance_of SalesAnalyst, @sales_analyst
-    assert_equal SalesEngine, @sales_engine
-    assert_equal @sales_engine, @sales_analyst.sales_engine
   end
 
   def test_it_finds_average_items_per_merchant
@@ -28,7 +26,7 @@ class TestSalesAnalyst < MiniTest::Test
   def test_it_item_count_of_all_merchants
     assert_equal 475, @sales_analyst.all_merchant_item_count.length
   end
-
+  #
   def test_it_can_find_standard_deviation
     merchant_items = @sales_analyst.all_merchant_item_count.values
     assert_equal 3.26, @sales_analyst.average_items_per_merchant_standard_deviation
@@ -109,13 +107,6 @@ class TestSalesAnalyst < MiniTest::Test
     assert_equal Merchant, @sales_analyst.merchants_with_only_one_item_registered_in_month("June").first.class
   end
 
-  # def test_it_returns_revenue_for_given_merchant
-  #   expected = @sales_analyst.revenue_by_merchant(12334194)
-
-  #   assert_equal BigDecimal.new(expected), expected
-  #   assert_equal BigDecimal, expected
-  # end
-
   def test_invoice_paid_in_full
     assert_equal true, @sales_analyst.invoice_paid_in_full?(1)
     assert_equal true, @sales_analyst.invoice_paid_in_full?(200)
@@ -123,9 +114,33 @@ class TestSalesAnalyst < MiniTest::Test
     assert_equal false, @sales_analyst.invoice_paid_in_full?(204)
   end
 
-  def test_invoice_total
-    assert_equal 21067.77, @sales_analyst.invoice_total(1)
-    assert_equal BigDecimal, @sales_analyst.invoice_total(1).class
+  def test_total_revenue_by_date
+    date = Time.parse("2009-02-07")
+    assert_equal 21067.77, @sales_analyst.total_revenue_by_date(date)
+    assert_equal BigDecimal, @sales_analyst.total_revenue_by_date("2009-02-07").class
+  end
+
+  def test_top_revenue_earners
+    assert_equal Merchant, @sales_analyst.top_revenue_earners.first.class
+    assert_equal 12334634, @sales_analyst.top_revenue_earners.first.id
+    assert_equal Merchant, @sales_analyst.top_revenue_earners.first.class
+    assert_equal 12335747, @sales_analyst.top_revenue_earners.last.id
+  end
+
+  def test_revenue_by_merchant
+    expected = @sales_analyst.revenue_by_merchant(12334194)
+    assert_equal expected, BigDecimal.new(expected)
+  end
+
+  def test_top_revenue_earners
+    expected = @sales_analyst.top_revenue_earners(10)
+      first = expected.first
+      last = expected.last
+
+    assert_equal 10, expected.length
+    assert_equal Merchant, expected.first.class
+    assert_equal 12334634, expected.first.id
+    assert_equal Merchant, expected.last.class
+    assert_equal 12335747, expected.last.id
   end
 end
-

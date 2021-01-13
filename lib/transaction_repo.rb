@@ -76,4 +76,14 @@ class TransactionRepository
   def delete(id)
     transactions.delete(id)
   end
+
+  def successful_transactions
+    find_all_by_result(:success)
+  end
+
+  def successful_transactions_invoice_ids
+    successful_transactions.map do |successful_transaction|
+      successful_transaction.invoice_id
+    end.flatten.uniq
+  end
 end
