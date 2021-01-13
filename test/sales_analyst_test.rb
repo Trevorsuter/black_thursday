@@ -62,7 +62,7 @@ class TestSalesAnalyst < MiniTest::Test
     assert_equal 12, @sales_analyst.top_merchants_by_invoice_count.length
     assert_equal Merchant, @sales_analyst.top_merchants_by_invoice_count.first.class
   end
-  #
+
   def test_bottom_merchants_by_invoice_count
     assert_equal 4, @sales_analyst.bottom_merchants_by_invoice_count.length
     assert_equal Merchant, @sales_analyst.bottom_merchants_by_invoice_count.first.class
@@ -125,10 +125,6 @@ class TestSalesAnalyst < MiniTest::Test
     assert_equal 12334634, @sales_analyst.top_revenue_earners.first.id
     assert_equal Merchant, @sales_analyst.top_revenue_earners.first.class
     assert_equal 12335747, @sales_analyst.top_revenue_earners.last.id
-  end
-
-  def test_top_revenue_by_merchant
-    assert_equal 1, @sales_analyst.revenue_by_merchant(12334194)
   end
 
   def test_revenue_by_merchant

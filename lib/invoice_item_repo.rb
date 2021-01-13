@@ -21,7 +21,6 @@ class InvoiceItemRepository
     ii_rows.each do |row|
       precision      = row[:unit_price].length
       value_adjusted = row[:unit_price].to_i * 0.01
-      # A module could hold assignment hashes for all classes
       @invoice_items[row[:id].to_i] = InvoiceItem.new({:id => row[:id].to_i,
                           :item_id        => row[:item_id].to_i,
                           :invoice_id => row[:invoice_id].to_i,
