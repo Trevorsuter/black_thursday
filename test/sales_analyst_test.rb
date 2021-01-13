@@ -107,13 +107,6 @@ class TestSalesAnalyst < MiniTest::Test
     assert_equal Merchant, @sales_analyst.merchants_with_only_one_item_registered_in_month("June").first.class
   end
 
-  # def test_it_returns_revenue_for_given_merchant
-  #   expected = @sales_analyst.revenue_by_merchant(12334194)
-
-  #   assert_equal BigDecimal.new(expected), expected
-  #   assert_equal BigDecimal, expected
-  # end
-
   def test_invoice_paid_in_full
     assert_equal true, @sales_analyst.invoice_paid_in_full?(1)
     assert_equal true, @sales_analyst.invoice_paid_in_full?(200)
@@ -136,5 +129,22 @@ class TestSalesAnalyst < MiniTest::Test
 
   def test_top_revenue_by_merchant
     assert_equal 1, @sales_analyst.revenue_by_merchant(12334194)
+  end
+
+  def test_revenue_by_merchant
+    expected = @sales_analyst.revenue_by_merchant(12334194)
+    assert_equal expected, BigDecimal.new(expected)
+  end
+
+  def test_top_revenue_earners
+    expected = @sales_analyst.top_revenue_earners(10)
+      first = expected.first
+      last = expected.last
+
+    assert_equal 10, expected.length
+    assert_equal Merchant, expected.first.class
+    assert_equal 12334634, expected.first.id
+    assert_equal Merchant, expected.last.class
+    assert_equal 12335747, expected.last.id
   end
 end

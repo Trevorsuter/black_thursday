@@ -106,6 +106,39 @@ class SalesEngine
     revenue
   end
 
+  def revenue_by_merchant(merchant_id)
+    revenue = 0
+    merchant_match = @invoices.all.find_all do |invoice|
+      invoice.merchant_id == merchant_id
+    end
+    merchant_match.each do |invoice|
+      if invoice_paid_in_full?(invoice.id)
+        revenue += invoice_total(invoice.id)
+      end
+    end
+    revenue
+  end
+
+  def invoice_paid_in_full?(invoice_id)
+    transacts = @transactions.find_all_by_invoice_id(invoice_id)
+    success = transacts.map do |transact|
+      true if transact.result == :success
+     end
+    if success.include?(true) == true
+      true
+    else
+      false
+    end
+  end
+
+  def invoice_total(invoice_id)
+    all_items = @invoice_items.find_all_by_invoice_id(invoice_id)
+    all_prices = all_items.map do |item|
+      (item.unit_price * item.quantity)
+    end
+    all_prices.sum
+  end
+  
   def successful_invoice_transactions(day)
     invoices_by_date(day).select do |invoice|
       @transactions.successful_transactions_invoice_ids.any? do |trans_inv_id|
