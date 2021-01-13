@@ -127,5 +127,22 @@ class TestSalesAnalyst < MiniTest::Test
     assert_equal 21067.77, @sales_analyst.invoice_total(1)
     assert_equal BigDecimal, @sales_analyst.invoice_total(1).class
   end
+
+  def test_find_all_sold_items_for_merchant
+    assert_equal 28, @sales_analyst.find_all_sold_items_for_merchant(12334105).length
+    assert_equal Integer, @sales_analyst.find_all_sold_items_for_merchant(12334105)[0].class
+  end
+
+  def test_most_items_sold_for_merchant
+    assert_equal 7, @sales_analyst.most_items_sold_for_merchant(12334149).length
+    assert_equal Item, @sales_analyst.most_items_sold_for_merchant(12334149)[0].class
+  end
+
+  def test_best_item_for_merchant
+    require 'pry'; binding.pry
+    expected = @sales_engine.items.find_by_id(263556848)
+    assert_equal expected, @sales_analyst.best_item_for_merchant(12334105)
+    assert_equal Item, @sales_analyst.most_items_sold_for_merchant(12334105)[0].class
+  end
 end
 

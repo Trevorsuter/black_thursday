@@ -194,4 +194,46 @@ class SalesAnalyst
     end
     all_prices.sum
   end
+
+  def find_all_sold_items_for_merchant(merchant_id)
+    merchant_inv = @sales_engine.invoices.find_all_by_merchant_id(merchant_id)
+    merchant_inv_id = merchant_inv.map do |inv|
+      inv.id if invoice_paid_in_full?(inv.id) == true
+    end
+    merchant_inv_items = merchant_inv_id.map do |inv_id|
+      @sales_engine.invoice_items.find_all_by_invoice_id(inv_id)
+    end
+    merchant_inv_items.flatten!
+    merchant_inv_items_id = merchant_inv_items.map do |it|
+      it.item_id
+    end
+    merchant_inv_items_id
+  end
+
+  def most_items_sold_for_merchant(merchant_id)
+    ids = find_all_sold_items_for_merchant(merchant_id)
+    count = Hash.new
+    uniq_id = ids.uniq
+    uniq_id.each do |id|
+      ids.each do |items|
+      count[@sales_engine.items.find_by_id(id)] = ids.count(items) if items == id
+      end
+    end
+    most = count.find_all do |key, value|
+      key if count[key] == count.values.max
+    end
+    most.flatten!
+    most.delete(count.values.max)
+    most
+  end
+
+  def best_item_for_merchant(merchant_id)
+    item_ids = find_all_sold_items_for_merchant(merchant_id)
+    best_item = Hash.new({})
+    item_info = Hash.new
+    item_ids.each do |it|
+      best_item[@sales_engine.items.find_by_id(it)] = (@sales_engine.items.find_by_id(it).unit_price * item_ids.count(it))
+    end
+    best_item.key(best_item.values.max)
+  end
 end
