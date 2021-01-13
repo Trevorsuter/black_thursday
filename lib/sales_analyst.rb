@@ -229,8 +229,7 @@ class SalesAnalyst
 
   def best_item_for_merchant(merchant_id)
     item_ids = find_all_sold_items_for_merchant(merchant_id)
-    best_item = Hash.new({})
-    item_info = Hash.new
+    best_item = Hash.new
     item_ids.each do |it|
       best_item[@sales_engine.items.find_by_id(it)] = (@sales_engine.items.find_by_id(it).unit_price * item_ids.count(it))
     end
