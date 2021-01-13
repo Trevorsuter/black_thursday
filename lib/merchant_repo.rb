@@ -1,10 +1,10 @@
-require 'CSV'
-
 require_relative './cleaner'
 require_relative './merchant'
-
+require_relative './openable'
 
 class MerchantRepository
+  include Openable
+
   attr_accessor :merchants
   attr_reader :engine
 
@@ -12,16 +12,15 @@ class MerchantRepository
     @engine = engine
     @file = file
     @merchants = {}
-    @data = CSV.open(@file, headers: true, header_converters: :symbol)
-    build_merchants
+    build_merchants(read_from(@file))
   end
 
   def inspect
     "#<#{self.class} #{@merchants.size} rows>"
   end
 
-  def build_merchants
-    @data.each do |merchant|
+  def build_merchants(merchants)
+    merchants.each do |merchant|
       cleaner = Cleaner.new
       @merchants[merchant[:id].to_i] = Merchant.new({
                                       id: cleaner.clean_id(merchant[:id]),
