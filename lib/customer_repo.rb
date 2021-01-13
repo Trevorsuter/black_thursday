@@ -1,9 +1,9 @@
-require 'CSV'
 require 'Time'
 require_relative './customer'
-
+require_relative './openable'
 
 class CustomerRepository
+  include Openable
 
   attr_reader :engine, :data
   attr_accessor :customers
@@ -11,7 +11,7 @@ class CustomerRepository
     @engine = engine
     @file = file
     @customers = {}
-    build_customers(CSV.readlines(@file, headers: true, header_converters: :symbol))
+    build_customers(read_from(@file))
   end
 
   def inspect
