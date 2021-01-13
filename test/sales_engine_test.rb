@@ -60,14 +60,9 @@ class SalesEngineTest < Minitest::Test
 
   def test_total_revenue_by_date
     date = Time.parse("2009-02-07")
-    expected = @sales_analyst.total_revenue_by_date(date)
+    expected = @sales_engine.total_revenue_by_date(date)
     assert_equal 21067.77, expected
     assert_equal BigDecimal, expected.class
-
-#     assert_equal "2009-02-07", @sales_engine.invoices_by_date("2009-02-07").first.created_at.strftime('%Y-%m-%d')
-#     assert_equal 1, @sales_engine.invoices_by_date("2009-02-07").count
-#     assert_equal 21067.77, @sales_engine.total_revenue_by_date("2009-02-07")
-#     assert_equal BigDecimal, @sales_engine.total_revenue_by_date("2009-02-07").class
   end
 
   def test_merchants_with_pending_invoices
