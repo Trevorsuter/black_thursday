@@ -194,4 +194,22 @@ class SalesAnalyst
     end
     all_prices.sum
   end
+
+  def revenue_by_merchant(merchant_id)
+    @sales_engine.revenue_by_merchant(merchant_id)
+  end
+
+  def all_merchant_revenue
+    merchant_rev = {}
+    @sales_engine.merchants.all.each do |merchant|
+      merchant_rev[merchant] = @sales_engine.revenue_by_merchant(merchant.id)
+    end
+    merchant_rev
+  end
+
+  def top_revenue_earners(x = 20)
+    all_merchant_revenue.sort_by do |merchant, revenue|
+      revenue
+    end.reverse.to_h.keys[0, x]
+  end
 end

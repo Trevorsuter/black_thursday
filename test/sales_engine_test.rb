@@ -58,12 +58,22 @@ class SalesEngineTest < Minitest::Test
     assert_equal answer, @sales_engine.invoices_per_day_count
   end
 
-  def test_total_revenue_per_day
+  def test_total_revenue_by_date
+    date = Time.parse("2009-02-07")
+    expected = @sales_analyst.total_revenue_by_date(date)
+
+    assert_equal 21067.77, expected
+    assert_equal BigDecimal, expected.class
   end
 
   def test_merchants_with_pending_invoices
     assert_equal 2175, @sales_engine.pending_invoices.count
     assert_equal 467, @sales_engine.merchants_with_pending_invoices.count
     assert_equal Merchant, @sales_engine.merchants_with_pending_invoices.first.class
+  end
+
+  def test_revenue_by_merchant
+    expected = @sales_engine.revenue_by_merchant(12334194)
+    assert_equal expected, BigDecimal.new(expected)
   end
 end
