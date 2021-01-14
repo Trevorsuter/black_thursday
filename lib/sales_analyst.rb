@@ -53,7 +53,6 @@ class SalesAnalyst
   def merchants_with_high_item_count
     merchants = []
     all_merchant_item_count.each do |merchant, item_count|
-      # if item_count > (average_items_per_merchant_standard_deviation(all_merchant_item_count.values)) + 3
       if item_count > 6
         merchants << merchant
       end
@@ -194,7 +193,7 @@ class SalesAnalyst
     end
     all_prices.sum
   end
-
+  
   def find_all_sold_items_for_merchant(merchant_id)
     merchant_inv = @sales_engine.invoices.find_all_by_merchant_id(merchant_id)
     merchant_inv_id = merchant_inv.map do |inv|
@@ -234,5 +233,27 @@ class SalesAnalyst
       best_item[@sales_engine.items.find_by_id(it)] = (@sales_engine.items.find_by_id(it).unit_price * item_ids.count(it))
     end
     best_item.key(best_item.values.max)
+  end
+
+  def revenue_by_merchant(merchant_id)
+    @sales_engine.revenue_by_merchant(merchant_id)
+  end
+
+  def all_merchant_revenue
+    merchant_rev = {}
+    @sales_engine.merchants.all.each do |merchant|
+      merchant_rev[merchant] = @sales_engine.revenue_by_merchant(merchant.id)
+    end
+    merchant_rev
+  end
+
+  def top_revenue_earners(x = 20)
+    all_merchant_revenue.sort_by do |merchant, revenue|
+      revenue
+    end.reverse.to_h.keys[0, x]
+  end
+
+  def total_revenue_by_date(day)
+    @sales_engine.total_revenue_by_date(day)
   end
 end

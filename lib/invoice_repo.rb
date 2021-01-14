@@ -1,25 +1,25 @@
-require 'CSV'
 require_relative './cleaner.rb'
 require_relative './invoice.rb'
-
+require_relative './openable'
 
 class InvoiceRepository
+  include Openable
+
   attr_accessor :invoices
 
   def initialize(file = './data/invoices.csv', engine)
     @engine = engine
     @file = file
     @invoices = {}
-    @data = CSV.open(@file, headers: true, header_converters: :symbol)
-    build_invoices
+    build_invoices(read_from(@file))
   end
 
   def inspect
-    "#<#{self.class} #{@merchants.size} rows>"
+    "#<#{self.class} #{@invoices.size} rows>"
   end
 
-  def build_invoices
-    @data.each do |invoice|
+  def build_invoices(invoices)
+    invoices.each do |invoice|
       cleaner = Cleaner.new
       @invoices[invoice[:id].to_i] = Invoice.new({
                                         :id => cleaner.clean_id(invoice[:id]),
